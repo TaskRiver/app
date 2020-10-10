@@ -335,9 +335,5 @@
       "next"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  }
+  "husky": {}
 }
