@@ -6,15 +6,8 @@ import App from './App';
 import Home from '../pages/home/Home';
 
 // Lazily load routes and code split with webpack
-const LazyCounterPage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ '../pages/counter/Counter')
-);
 
-const CounterPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyCounterPage {...props} />
-  </React.Suspense>
-);
+const Test = () => <>Test</>;
 
 export default function Window() {
   return (
@@ -25,14 +18,18 @@ export default function Window() {
           padding: '8px 10px',
           '-webkit-app-region': 'drag',
           WebkitUserSelect: 'none',
+          flex: 0,
+          color: 'white',
         }}
       >
         Custom Title Bar
       </div>
-      <Switch>
-        <Route path={routes.COUNTER} component={CounterPage} />
-        <Route path={routes.HOME} component={Home} />
-      </Switch>
+      <div style={{ flex: 1 }}>
+        <Switch>
+          <Route path={routes.COUNTER} component={Test} />
+          <Route path={routes.HOME} component={Home} />
+        </Switch>
+      </div>
     </App>
   );
 }

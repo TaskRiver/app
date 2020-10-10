@@ -1,19 +1,33 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
+import {
+  ThemeProvider,
+  createMuiTheme,
+  CssBaseline,
+  Box,
+} from '@material-ui/core';
 import { history, configuredStore } from './store';
-import './app.global.css';
 
 const store = configuredStore();
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
+
+const theme = createMuiTheme({
+  palette: {},
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   // eslint-disable-next-line global-require
   const Root = require('./react/containers/Root').default;
   render(
     <AppContainer>
-      <Root store={store} history={history} />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box display="flex" flexDirection="column" height="100vh">
+          <Root store={store} history={history} />
+        </Box>
+      </ThemeProvider>
     </AppContainer>,
     document.getElementById('root')
   );
