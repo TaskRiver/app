@@ -16,7 +16,7 @@ const CounterPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
-export default function Routes() {
+export default function Window() {
   return (
     <App>
       <div
