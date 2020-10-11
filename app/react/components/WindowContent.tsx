@@ -3,7 +3,7 @@ import { Box, makeStyles } from '@material-ui/core';
 
 type Props = {
   children: ReactNode;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 };
 
 const styles = makeStyles({

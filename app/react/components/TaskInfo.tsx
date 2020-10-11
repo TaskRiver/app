@@ -17,16 +17,18 @@ const styles = makeStyles({
   },
 });
 
-export default function TaskInfo<>({ title }: Props): JSX.Element {
+export default function TaskInfo<>({ title, message }: Props): JSX.Element {
   const classes = styles();
   return (
     <div className={classes.stepArea}>
       <Typography variant="h6" className={classes.title}>
         {title}
       </Typography>
-      <Paper variant="outlined" className={classes.stepMessage}>
-        This is some optional information about this step
-      </Paper>
+      {message && (
+        <Paper variant="outlined" className={classes.stepMessage}>
+          {message}
+        </Paper>
+      )}
     </div>
   );
 }

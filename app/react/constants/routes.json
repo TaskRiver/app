@@ -1,7 +1,7 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
-  "TASK": "/tasks/{taskId}",
+  "TASK": "/task/:id",
   "LOGIN": "/login",
   "SIGNUP": "/signup",
   "CREATE": "/create",

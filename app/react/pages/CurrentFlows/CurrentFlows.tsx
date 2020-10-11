@@ -5,8 +5,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { transcode } from 'buffer';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
+import app from '../../../utils/base';
+import API from '../../constants/API';
 
 const styles = makeStyles({
   flows: {
@@ -18,24 +20,60 @@ const styles = makeStyles({
 
 export default function CurrentFlows(): JSX.Element {
   const classes = styles();
+
+  const [tasks, setTasks] = useState(null);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    const getData = async () => {
+      const token = await app.auth().currentUser?.getIdToken();
+      const taskResponse = await fetch(`${API}/tasks`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      });
+      setTasks(await taskResponse.json());
+    };
+    getData();
+  }, []);
+
   return (
     <div className={classes.flows}>
       <Typography variant="h3">Current Flows:</Typography>
       <Typography variant="h5">In Progress</Typography>
-      <Paper variant="outlined" style={{ padding: 10 }}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Typography variant="h6" style={{ display: 'inline-flex', flex: 1 }}>
-            Some Flow Title
-          </Typography>
-          <Typography variant="h6" style={{ display: 'inline-flex' }}>
-            3/6
-          </Typography>
-        </Box>
-        <LinearProgress variant="determinate" value={70} />
-        <Typography variant="body2" align="center">
-          Current step title
-        </Typography>
-      </Paper>
+      {console.log(tasks)}
+      {tasks &&
+        tasks.map((t) => (
+          <Paper
+            key={t._id}
+            variant="outlined"
+            style={{ padding: 10, cursor: 'pointer' }}
+            onClick={() => history.push(`/task/${t._id}`)}
+          >
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="space-between"
+            >
+              <Typography
+                variant="h6"
+                style={{ display: 'inline-flex', flex: 1 }}
+              >
+                {t.name}
+              </Typography>
+              <Typography variant="h6" style={{ display: 'inline-flex' }}>
+                {parseInt(t.currentStep, 10) + 1}/{t.steps.length}
+              </Typography>
+            </Box>
+            <LinearProgress variant="determinate" value={70} />
+            <Typography variant="body2" align="center">
+              {t.steps[t.currentStep].title}
+            </Typography>
+          </Paper>
+        ))}
     </div>
   );
 }

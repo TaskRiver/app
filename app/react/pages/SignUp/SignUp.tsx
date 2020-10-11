@@ -1,5 +1,5 @@
 import { Button, Paper, TextField } from '@material-ui/core';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useGlobal } from 'reactn';
 import { withRouter } from 'react-router';
 import app from '../../../utils/base';
 import WindowContent from '../../components/WindowContent';
@@ -16,21 +16,24 @@ const SignUp = ({ history }) => {
     lastName: '',
   });
 
+  const [, setUser] = useGlobal('userInfo');
+
   const handleSignUp = useCallback(
     async (event) => {
       event.preventDefault();
       const { email, firstName, lastName, password } = body;
       try {
         await app.auth().createUserWithEmailAndPassword(email, password);
-        const token = app.auth().currentUser?.getIdToken();
-        await fetch(`${API}/users`, {
+        const token = await app.auth().currentUser?.getIdToken();
+        const user = await fetch(`${API}/users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
           body: JSON.stringify({ email, firstName, lastName }),
         });
+        setUser(user);
         history.push('/');
       } catch (error) {
         console.log(error);
@@ -84,7 +87,7 @@ const SignUp = ({ history }) => {
             }}
             label="Last Name"
           />
-          <Button variant="outlined" style={{ marginBottom: 10 }}>
+          <Button type="submit" variant="outlined" style={{ marginBottom: 10 }}>
             Sign Up
           </Button>
           <Button

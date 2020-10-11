@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, setGlobal } from 'reactn';
 import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import {
@@ -15,6 +15,10 @@ const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 
 const theme = createMuiTheme({
   palette: {},
+});
+
+setGlobal({
+  userInfo: {},
 });
 
 document.addEventListener('DOMContentLoaded', () => {

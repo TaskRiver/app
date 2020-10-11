@@ -72,8 +72,8 @@ export default function Layout(): JSX.Element {
         </AppBar>
         <div className={classes.contentArea}>
           <Switch>
+            <Route path={routes.TASK} component={TaskView} />
             <Route path={routes.HOME} component={SidebarPage} />
-            <Route exact path={routes.TASK} component={TaskView} />
           </Switch>
         </div>
       </div>

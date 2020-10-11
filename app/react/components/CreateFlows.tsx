@@ -7,8 +7,11 @@ import {
 } from '@material-ui/core';
 import { AddCircle } from '@material-ui/icons';
 import { BackgroundColor } from 'chalk';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
+import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
+import app from '../../utils/base';
+import API from '../constants/API';
 
 interface Step {
   id: string;
@@ -17,9 +20,38 @@ interface Step {
   message?: string; // Optional
 }
 
+interface Task {
+  name: string;
+  steps: Step[];
+}
+
 export default function CreateFlows(): JSX.Element {
   const [steps, setSteps] = useState<Step[]>([]);
   const [taskTitle, setTaskTitle] = useState(null);
+
+  const history = useHistory();
+
+  const handleCreate = useCallback(
+    async (event) => {
+      event.preventDefault();
+      try {
+        const token = await app.auth().currentUser?.getIdToken();
+        const tasks = await fetch(`${API}/tasks`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ name: taskTitle, steps }),
+        });
+        history.push('/');
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [steps, taskTitle]
+  );
+
   return (
     <div
       style={{
@@ -42,7 +74,6 @@ export default function CreateFlows(): JSX.Element {
         }}
         placeholder="Task Title"
         onChange={({ target }) => setTaskTitle(target.value)}
-        value={taskTitle}
       />
       <div
         style={{
@@ -132,7 +163,7 @@ export default function CreateFlows(): JSX.Element {
           alignItems: 'flex-end',
         }}
       >
-        <Button variant="contained" color="primary">
+        <Button variant="contained" onClick={handleCreate} color="primary">
           Create Task
         </Button>
       </div>
