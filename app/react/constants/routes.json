@@ -3,5 +3,7 @@
   "COUNTER": "/counter",
   "TASK": "/tasks/{taskId}",
   "LOGIN": "/login",
-  "SIGNUP": "signup"
+  "SIGNUP": "/signup",
+  "CREATE": "/create",
+  "SETTINGS": "/settings"
 }

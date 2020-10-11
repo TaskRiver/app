@@ -12,14 +12,14 @@ import {
 import { ArrowBack, ChevronRight } from '@material-ui/icons';
 import BrowserView from 'react-electron-browser-view';
 import WindowContent from '../../components/WindowContent';
-import { transcode } from 'buffer';
+import TaskInfo from '../../components/TaskInfo';
 
 const styles = makeStyles({
   taskArea: {
     height: '100%',
     display: 'grid',
     gridTemplateColumns: '400px 1fr',
-    gridTemplateRows: 'auto 70px',
+    gridTemplateRows: '1fr 70px',
     gridTemplateAreas: ["'sidebar browser'", "'sidebar actions'"].join('\n'),
   },
   taskSidebar: {
@@ -91,24 +91,24 @@ export default function TaskView(): JSX.Element {
           <div className={classes.progressArea}>
             <LinearProgress variant="determinate" value={50} />
           </div>
-          <div className={classes.stepArea}>
-            <Typography variant="h6" className={classes.title}>
-              Current Task
-            </Typography>
-            <Paper variant="outlined" className={classes.stepMessage}>
-              This is some optional information about this step
-            </Paper>
-          </div>
+          <TaskInfo title="Stuff" />
           <div className={classes.notesArea}>
             <Typography variant="h6" className={classes.title}>
               Notes
             </Typography>
             <Paper elevation={3} className={classes.stickyNote}>
-              <TextField placeholder="Title" style={{ marginBottom: 10 }} />
+              <TextField
+                placeholder="Title"
+                style={{ marginBottom: 10 }}
+                inputProps={{ style: { fontWeight: 'bold' } }}
+              />
               <TextField
                 label="Note Body"
                 variant="outlined"
-                rows={4}
+                InputProps={{
+                  rows: 4,
+                  rowsMin: 4,
+                }}
                 multiline
               />
             </Paper>

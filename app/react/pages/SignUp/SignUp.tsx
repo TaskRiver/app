@@ -1,39 +1,103 @@
-import React, { useCallback } from 'react';
+import { Button, Paper, TextField } from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
 import { withRouter } from 'react-router';
 import app from '../../../utils/base';
+import WindowContent from '../../components/WindowContent';
+import TRLogo from '../../assets/Logo.svg';
+import { Link } from 'react-router-dom';
+import routes from '../../constants/routes.json';
+import API from '../../constants/API';
 
 const SignUp = ({ history }) => {
+  const [body, setBody] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+  });
+
   const handleSignUp = useCallback(
     async (event) => {
       event.preventDefault();
-      const { email, password } = event.target.elements;
+      const { email, firstName, lastName, password } = body;
       try {
-        await app
-          .auth()
-          .createUserWithEmailAndPassword(email.value, password.value);
+        await app.auth().createUserWithEmailAndPassword(email, password);
+        const token = app.auth().currentUser?.getIdToken();
+        await fetch(`${API}/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email, firstName, lastName }),
+        });
         history.push('/');
       } catch (error) {
-        alert(error);
+        console.log(error);
       }
     },
-    [history]
+    [body]
   );
 
   return (
-    <div>
-      <h1>Sign up</h1>
+    <WindowContent
+      style={{
+        background: '#FFE1A8',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <form onSubmit={handleSignUp}>
-        <label>
-          Email
-          <input name="email" type="email" placeholder="Email" />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" placeholder="Password" />
-        </label>
-        <button type="submit">Sign Up</button>
+        <Paper
+          style={{
+            padding: 20,
+            display: 'flex',
+            flexDirection: 'column',
+            width: 400,
+          }}
+        >
+          <img src={TRLogo} style={{ height: '75%', width: 'auto' }} />
+
+          <TextField
+            onChange={({ target }) => {
+              setBody((b) => ({ ...b, email: target.value }));
+            }}
+            label="Email"
+          />
+          <TextField
+            onChange={({ target }) => {
+              setBody((b) => ({ ...b, password: target.value }));
+            }}
+            label="Password"
+            type="password"
+          />
+          <TextField
+            onChange={({ target }) => {
+              setBody((b) => ({ ...b, firstName: target.value }));
+            }}
+            label="First Name"
+          />
+          <TextField
+            onChange={({ target }) => {
+              setBody((b) => ({ ...b, lastName: target.value }));
+            }}
+            label="Last Name"
+          />
+          <Button variant="outlined" style={{ marginBottom: 10 }}>
+            Sign Up
+          </Button>
+          <Button
+            variant="outlined"
+            component={Link}
+            to={routes.LOGIN}
+            style={{ marginBottom: 10 }}
+          >
+            Login
+          </Button>
+        </Paper>
       </form>
-    </div>
+    </WindowContent>
   );
 };
 

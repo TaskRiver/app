@@ -24,7 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
     <AppContainer>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box display="flex" flexDirection="column" height="100vh">
+        <Box
+          display="flex"
+          flexDirection="column"
+          height="100vh"
+          maxHeight="100vh"
+          // overflow="hidden"
+        >
           <Root store={store} history={history} />
         </Box>
       </ThemeProvider>

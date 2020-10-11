@@ -3,6 +3,7 @@ import { Box, makeStyles } from '@material-ui/core';
 
 type Props = {
   children: ReactNode;
+  style: React.CSSProperties;
 };
 
 const styles = makeStyles({
@@ -11,7 +12,11 @@ const styles = makeStyles({
   },
 });
 
-export default function WindowContent({ children }: Props): JSX.Element {
+export default function WindowContent({ children, style }: Props): JSX.Element {
   const classes = styles();
-  return <Box className={classes.windowContent}>{children}</Box>;
+  return (
+    <Box className={classes.windowContent} style={style}>
+      {children}
+    </Box>
+  );
 }
