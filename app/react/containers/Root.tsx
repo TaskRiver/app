@@ -5,6 +5,7 @@ import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
 import { Store } from '../../store';
 import Window from './Window';
+import { AuthProvider } from '../pages/Login/Auth';
 
 type Props = {
   store: Store;
@@ -13,9 +14,11 @@ type Props = {
 
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Window />
-    </ConnectedRouter>
+    <AuthProvider>
+      <ConnectedRouter history={history}>
+        <Window />
+      </ConnectedRouter>
+    </AuthProvider>
   </Provider>
 );
 

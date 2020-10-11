@@ -1,5 +1,7 @@
 {
   "HOME": "/",
   "COUNTER": "/counter",
-  "TASK": "/tasks/{taskId}"
+  "TASK": "/tasks/{taskId}",
+  "LOGIN": "/login",
+  "SIGNUP": "signup"
 }
