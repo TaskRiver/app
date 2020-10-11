@@ -3,7 +3,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import App from './App';
-import Home from '../pages/home/Home';
+import TaskView from '../pages/TaskView/TaskView';
 
 // Lazily load routes and code split with webpack
 
@@ -27,7 +27,8 @@ export default function Window() {
       <div style={{ flex: 1 }}>
         <Switch>
           <Route path={routes.COUNTER} component={Test} />
-          <Route path={routes.HOME} component={Home} />
+          <Route path={routes.HOME} component={TaskView} />
+          {/* <Route path={routes.TASK} component={TaskView} /> */}
         </Switch>
       </div>
     </App>
