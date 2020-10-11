@@ -32,7 +32,7 @@ export default function Window() {
   const classes = styles();
   return (
     <App>
-      <div className={classes.titleBar}>Custom Title Bar</div>
+      <div className={classes.titleBar}>🌊TaskRiver</div>
       <Switch>
         {/* <Route path={routes.COUNTER} component={Test} /> */}
         {/* <PrivateRoute exact path={routes.HOME} component={Home} /> */}

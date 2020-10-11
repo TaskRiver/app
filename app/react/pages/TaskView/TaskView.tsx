@@ -30,6 +30,8 @@ const styles = makeStyles({
   taskSidebar: {
     background: '#FFE1A8',
     gridArea: 'sidebar',
+    height: '100%',
+    overflow: 'auto',
     padding: 15,
     '& > *': {
       marginBottom: 10,
@@ -76,6 +78,7 @@ const styles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     padding: 10,
+    marginBottom: 20,
   },
 });
 
@@ -88,6 +91,33 @@ export default function TaskView(): JSX.Element {
   const [task, setTask] = useState(null);
 
   const [currentStep, setCurrentStep] = useState(null);
+
+  const updateTask = useCallback(
+    async (event) => {
+      event.preventDefault();
+      try {
+        const token = await app.auth().currentUser?.getIdToken();
+        const complete = ((currentStep + 1) / task.steps.length) * 100;
+        const tasks = await fetch(`${API}/tasks/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({
+            ...task,
+            currentStep,
+            percentComplete: complete,
+            completed: complete >= 100,
+          }),
+        });
+        console.log(tasks);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [id, task, currentStep]
+  );
 
   useEffect(() => {
     const getData = async () => {
@@ -102,8 +132,13 @@ export default function TaskView(): JSX.Element {
       });
       const newTaskRes = await taskResponse.json();
       const { _doc: newTask } = newTaskRes;
-      setCurrentStep(parseInt(newTask.currentStep, 10));
-      setTask(newTask);
+      setCurrentStep(
+        parseInt(!newTask.currentStep ? 0 : newTask.currentStep, 10)
+      );
+      setTask({
+        ...newTask,
+        currentStep: !newTask.currentStep ? 0 : newTask.currentStep,
+      });
     };
     getData();
   }, [id]);
@@ -155,11 +190,12 @@ export default function TaskView(): JSX.Element {
                   variant="contained"
                   color="primary"
                   endIcon={<ChevronRight />}
-                  onClick={() =>
+                  onClick={(e) => {
                     setCurrentStep((step) =>
                       step < task.steps.length - 1 ? step + 1 : step
-                    )
-                  }
+                    );
+                    updateTask(e);
+                  }}
                 >
                   Next Step
                 </Button>
@@ -169,7 +205,10 @@ export default function TaskView(): JSX.Element {
                   variant="contained"
                   color="primary"
                   endIcon={<ChevronRight />}
-                  onClick={() => history.push('/')}
+                  onClick={(e) => {
+                    updateTask(e);
+                    history.push('/');
+                  }}
                 >
                   Complete Task
                 </Button>
@@ -198,7 +237,7 @@ function Notes({ taskId }): JSX.Element {
     });
     const res = await taskResponse.json();
     console.log(res);
-    setNotes(res);
+    setNotes(res.reverse());
   };
 
   const handleCreate = useCallback(async (event) => {
@@ -238,22 +277,48 @@ function Notes({ taskId }): JSX.Element {
         >
           <AddCircle />
         </IconButton>
-        {notes && notes.map((n) => <Note key={n._id} noteInfo={n} />)}
       </div>
+      {notes &&
+        notes.map((n) => (
+          <Note key={n._id} noteInfo={n} updateNotes={getData} />
+        ))}
     </>
   );
 }
 
-function Note({ noteInfo }): JSX.Element {
+function Note({ noteInfo, updateNotes }): JSX.Element {
   const classes = styles();
-  const [note, setNote] = useState();
+  const [note, setNote] = useState(noteInfo);
+
+  const handleUpdate = useCallback(
+    async (event) => {
+      event.preventDefault();
+      try {
+        const token = await app.auth().currentUser?.getIdToken();
+        const notes = await fetch(`${API}/notes/${note._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ ...note }),
+        });
+        updateNotes();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [note]
+  );
+
   return (
     <Paper elevation={3} className={classes.stickyNote}>
       <TextField
         placeholder="Title"
         style={{ marginBottom: 10 }}
         inputProps={{ style: { fontWeight: 'bold' } }}
-        value={noteInfo.title}
+        value={note.title}
+        onChange={({ target }) => setNote({ ...note, title: target.value })}
       />
       <TextField
         label="Note Body"
@@ -263,9 +328,10 @@ function Note({ noteInfo }): JSX.Element {
           rowsMin: 4,
         }}
         multiline
-        value={noteInfo.content}
+        value={note.content}
+        onChange={({ target }) => setNote({ ...note, content: target.value })}
       />
-      <Button onClick={() => {}}>Update</Button>
+      <Button onClick={handleUpdate}>Update</Button>
     </Paper>
   );
 }
