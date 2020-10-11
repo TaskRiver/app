@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
 import { Store } from '../../store';
 import Window from './Window';
-import { AuthProvider } from '../pages/Login/Auth';
+import { AuthProvider } from '../components/Auth';
 
 type Props = {
   store: Store;

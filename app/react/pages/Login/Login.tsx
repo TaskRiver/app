@@ -1,26 +1,23 @@
-import React, { useCallback, useContext } from "react";
-import { withRouter, Redirect } from "react-router";
-import app from "./base.tsx";
-import { AuthContext } from "./Auth.tsx";
+import React, { useCallback, useContext } from 'react';
+import { withRouter, Redirect } from 'react-router';
+import app from '../../../utils/base.tsx';
+import { AuthContext } from '../../components/Auth.tsx';
 
 const Login = ({ history }) => {
-  const handleLogin = useCallback(
-    async event => {
-      event.preventDefault();
-      const { email, password } = event.target.elements;
-      try {
-        const response = await app
-          .auth()
-          .signInWithEmailAndPassword(email.value, password.value);
-        const token = await app.auth().currentUser.getIdToken();
-        //history.push("/");
-        console.log("this is the token" , token)
-      } catch (error) {
-        alert(error);
-      }
-    },
-    []
-  );
+  const handleLogin = useCallback(async (event) => {
+    event.preventDefault();
+    const { email, password } = event.target.elements;
+    try {
+      const response = await app
+        .auth()
+        .signInWithEmailAndPassword(email.value, password.value);
+      const token = await app.auth().currentUser.getIdToken();
+      //history.push("/");
+      console.log('this is the token', token);
+    } catch (error) {
+      alert(error);
+    }
+  }, []);
 
   const { currentUser } = useContext(AuthContext);
 

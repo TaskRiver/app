@@ -4,11 +4,11 @@ import { Switch, Route } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import App from './App';
 import TaskView from '../pages/TaskView/TaskView';
-import { AuthProvider } from '../pages/Login/Auth';
+import { AuthProvider } from '../components/Auth';
 import Login from '../pages/Login/Login';
-import SignUp from '../pages/Login/SignUp';
-import Homee from '../pages/Login/Home';
-import PrivateRoute from '../pages/Login/PrivateRoute';
+import SignUp from '../pages/SignUp/SignUp';
+import Home from '../pages/home/Home';
+import PrivateRoute from '../components/PrivateRoute';
 
 // Lazily load routes and code split with webpack
 
@@ -30,13 +30,13 @@ export default function Window() {
         Custom Title Bar
       </div>
       <div style={{ flex: 1 }}>
-          <Switch>
-            {/* <Route path={routes.COUNTER} component={Test} /> */}
-            <PrivateRoute exact path={routes.HOME} component={Homee} />
-            <Route path={routes.LOGIN} component={Login}/>
-            <Route path={routes.SIGNUP} component={SignUp}/>
-            {/* <Route path={routes.TASK} component={TaskView} /> */}
-          </Switch>
+        <Switch>
+          {/* <Route path={routes.COUNTER} component={Test} /> */}
+          <PrivateRoute exact path={routes.HOME} component={Home} />
+          <Route path={routes.LOGIN} component={Login} />
+          <Route path={routes.SIGNUP} component={SignUp} />
+          {/* <Route path={routes.TASK} component={TaskView} /> */}
+        </Switch>
       </div>
     </App>
   );
